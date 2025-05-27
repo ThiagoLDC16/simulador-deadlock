@@ -17,7 +17,7 @@ public class Transacao extends Thread {
 	}
 
 	public Transacao(int id, Recurso x, Recurso y) {
-		this.id = ++Transacao.CURRENT_ID;
+		this.id = id;
 		this.x = x;
 		this.y = y;
 	}
@@ -25,11 +25,13 @@ public class Transacao extends Thread {
 	@Override
 	public void run() {
 		try {
-			System.out.println("[T" + this.id + "] Iniciando...");
+			Print.colored("[T" + this.id + "] Iniciando...", "WHITE");
+			this.randomSleep();
 			if (!x.lock(this)) {
 				abortAndRestart();
 				return;
 			}
+			this.randomSleep();
 			int read_x = x.read();
 			if (!y.lock(this)) {
 				abortAndRestart();
@@ -40,6 +42,7 @@ public class Transacao extends Thread {
 			y.write(read_y + 5);
 			x.unlock(this);
 			y.unlock(this);
+			Print.colored("[T" + this.id + "] Finalizou", "PURPLE");
 
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -48,8 +51,11 @@ public class Transacao extends Thread {
 	}
 
 	private void abortAndRestart() {
-		System.out.println("[T" + this.id + "] Abortando...");
 		new Transacao(this.id, x, y).start();
+	}
+	
+	private void randomSleep() throws InterruptedException {
+		Thread.sleep((long) (Math.random() * 1000));
 	}
 
 }

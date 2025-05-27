@@ -15,24 +15,25 @@ public class Recurso {
 	public boolean lock(Transacao t) throws InterruptedException {
 		if (lockTransaction == null) {
 			lockTransaction = t;
-			System.out.println("[T" + t.id + "] Bloqueou o recurso " + nome);
+			Print.colored("[T" + t.id + "] Bloqueou o recurso " + nome, "CYAN");
 			return true;
 		}
-		if (t.timestamp < lockTransaction.timestamp) {
-
+		if (t.timestamp > lockTransaction.timestamp) {
+			Print.colored("[T" + t.id + "] Abortando transação", "RED");
+			return false;
 		}
-		System.out.println("[T" + t.id + "] Aguardando recurso " + nome);
+		Print.colored("[T" + t.id + "] Aguardando recurso " + nome, "YELLOW");
 		while (lockTransaction != null) {
 			Thread.sleep(10);
 		}
 		lockTransaction = t;
-		System.out.println("[T" + t.id + "] Bloqueou o recurso " + nome);
+		Print.colored("[T" + t.id + "] Bloqueou o recurso " + nome, "CYAN");
 		return true;
 	}
 
 	public boolean unlock(Transacao t) {
 		if (this.lockTransaction == t) {
-			System.out.println("[T" + t.id + "] Desbloqueou o recurso " + nome);
+			Print.colored("[T" + t.id + "] Desbloqueou o recurso " + nome, "GREEN");
 			this.lockTransaction = null;
 			return true;
 		}

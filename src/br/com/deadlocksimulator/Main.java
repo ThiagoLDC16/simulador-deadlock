@@ -3,7 +3,7 @@ package br.com.deadlocksimulator;
 public class Main {
 
 	public static void main(String[] args) {
-		int N_THREADS = 10;
+		int N_THREADS = 20;
 		Recurso x = new Recurso("X", 0);
 		Recurso y = new Recurso("Y", 0);
 		
